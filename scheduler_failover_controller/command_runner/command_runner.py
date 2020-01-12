@@ -33,7 +33,7 @@ class CommandRunner:
         if base_command.startswith("sudo"):
             command_split = ["ssh", "-p", os.environ['AIRFLOW_SCHEDULER_FAILOVER_SSHPORT'], "-tt", host, base_command]
         else:
-            command_split = ["ssh", "-p", os.environ['AIRFLOW_SCHEDULER__FAILOVER_SSHPORT'], host, base_command]
+            command_split = ["ssh", "-p", os.environ['AIRFLOW_SCHEDULER_FAILOVER_SSHPORT'], host, base_command]
         return self._run_split_command(
             command_split=command_split
         )
