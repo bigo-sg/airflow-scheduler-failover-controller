@@ -146,6 +146,9 @@ class FailoverController:
         grep_command = "grep 'airflow scheduler'"
         grep_command_no_quotes = grep_command.replace("'", "")
         full_status_check_command = process_check_command + " | " + grep_command  # ps -eaf | grep 'airflow scheduler'
+        grep_extra_command = 'grep '
+        other_trash_command = 'ssh_config '
+        scheduler_command = 'airflow scheduler'
         is_running = False
         is_successful, output = self.command_runner.run_command(host, full_status_check_command)
         self.LATEST_FAILED_STATUS_MESSAGE = output
@@ -154,8 +157,10 @@ class FailoverController:
             for line in output:
                 if isinstance(line, bytes):
                     line = line.decode()
-                if line.strip() != "" and process_check_command not in line and grep_command not in line and grep_command_no_quotes not in line and full_status_check_command not in line:
-                    active_list.append(line)
+                if line.strip() != "" and process_check_command not in line and grep_command not in line and grep_command_no_quotes not in line and full_status_check_command not in line\
+                        and grep_extra_command not in line and other_trash_command not in line:
+                    if scheduler_command in line:
+                        active_list.append(line)
 
             active_list_length = len(list(filter(None, active_list)))
 
