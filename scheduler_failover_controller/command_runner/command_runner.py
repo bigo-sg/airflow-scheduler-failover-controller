@@ -30,10 +30,11 @@ class CommandRunner:
 
     def _run_ssh_command(self, host, base_command):
         self.logger.debug("Running command as SSH command")
+        sshport = "22" if not 'AIRFLOW_SCHEDULER_FAILOVER_SSHPORT' in os.environ else os.environ['AIRFLOW_SCHEDULER_FAILOVER_SSHPORT']
         if base_command.startswith("sudo"):
-            command_split = ["ssh", "-p", os.environ['AIRFLOW_SCHEDULER_FAILOVER_SSHPORT'], "-tt", host, base_command]
+            command_split = ["ssh", "-p", sshport, "-tt", host, base_command]
         else:
-            command_split = ["ssh", "-p", os.environ['AIRFLOW_SCHEDULER_FAILOVER_SSHPORT'], host, base_command]
+            command_split = ["ssh", "-p", sshport, host, base_command]
         return self._run_split_command(
             command_split=command_split
         )
